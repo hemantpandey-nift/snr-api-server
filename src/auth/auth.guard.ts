@@ -28,7 +28,9 @@ export class AuthGuard implements CanActivate {
 
       const userData = await this.usersService.getUserById(payload.sub);
 
-      if (!userData || !userData.isLogged) {
+      const lastLoggedTime = Math.floor(userData.lastLoggedAt.getTime() / 1000);
+
+      if (!userData || !userData.isLogged || lastLoggedTime > payload.iat) {
         throw new UnauthorizedException();
       }
 
